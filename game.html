@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>영어 스피킹 마스터 게임</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --error-color: #ef4444;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .game-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 2rem;
+            max-width: 800px;
+            width: 100%;
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        .game-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .game-title {
+            font-size: 2.5rem;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            background: var(--bg-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .game-subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background: rgba(102, 126, 234, 0.1);
+            border-radius: 15px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .game-modes {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .mode-btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+        }
+
+        .mode-btn.active {
+            background: var(--bg-gradient);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .game-area {
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            min-height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+        }
+
+        .challenge-text {
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .phonetic {
+            font-size: 1.2rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .difficulty-indicator {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .easy { background: var(--success-color); color: white; }
+        .medium { background: var(--warning-color); color: white; }
+        .hard { background: var(--error-color); color: white; }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--success-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--warning-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-danger {
+            background: var(--error-color);
+            color: white;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .recording-indicator {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            color: var(--error-color);
+            font-weight: 600;
+        }
+
+        .recording-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--error-color);
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .feedback {
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-weight: 600;
+            text-align: center;
+            display: none;
+        }
+
+        .feedback.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success-color);
+            border: 2px solid var(--success-color);
+        }
+
+        .feedback.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--error-color);
+            border: 2px solid var(--error-color);
+        }
+
+        .feedback.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning-color);
+            border: 2px solid var(--warning-color);
+        }
+
+        .progress-bar {
+            background: rgba(0, 0, 0, 0.1);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--bg-gradient);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .word-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .word-card {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .word-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--primary-color);
+        }
+
+        .word-card.completed {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--success-color);
+        }
+
+        .conversation-mode {
+            display: none;
+        }
+
+        .conversation-history {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .message {
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        .bot-message {
+            background: rgba(102, 126, 234, 0.2);
+            text-align: left;
+        }
+
+        .user-message {
+            background: rgba(16, 185, 129, 0.2);
+            text-align: right;
+        }
+
+        .avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--bg-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        @media (max-width: 600px) {
+            .game-container {
+                padding: 1rem;
+                margin: 10px;
+            }
+
+            .game-title {
+                font-size: 2rem;
+            }
+
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .stats-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-header">
+            <h1 class="game-title">🎤 영어 스피킹 마스터</h1>
+            <p class="game-subtitle">AI와 함께하는 재미있는 영어 발음 연습</p>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-value" id="score">0</div>
+                <div class="stat-label">점수</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="level">1</div>
+                <div class="stat-label">레벨</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="streak">0</div>
+                <div class="stat-label">연속성공</div>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <div class="game-modes">
+            <button class="mode-btn active" onclick="switchMode('pronunciation')">
+                🗣️ 발음 연습
+            </button>
+            <button class="mode-btn" onclick="switchMode('vocabulary')">
+                📚 단어 연습
+            </button>
+            <button class="mode-btn" onclick="switchMode('conversation')">
+                💬 대화 연습
+            </button>
+        </div>
+
+        <div class="game-area">
+            <div class="avatar">🤖</div>
+            <div class="difficulty-indicator easy" id="difficulty">초급</div>
+            
+            <div id="pronunciationMode">
+                <div class="challenge-text" id="challengeText">
+                    "Hello, how are you today?"
+                </div>
+                <div class="phonetic" id="phoneticText">
+                    /həˈloʊ, haʊ ɑr ju təˈdeɪ/
+                </div>
+            </div>
+
+            <div id="vocabularyMode" style="display: none;">
+                <div class="challenge-text" id="vocabChallenge">
+                    다음 단어를 영어로 말해보세요: "안녕하세요"
+                </div>
+                <div class="word-list" id="wordList"></div>
+            </div>
+
+            <div id="conversationMode" class="conversation-mode">
+                <div class="conversation-history" id="conversationHistory">
+                    <div class="message bot-message">안녕하세요! 자기소개를 해주세요.</div>
+                </div>
+            </div>
+
+            <div class="recording-indicator" id="recordingIndicator">
+                <div class="recording-dot"></div>
+                <span>녹음 중...</span>
+            </div>
+
+            <div class="feedback" id="feedback"></div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" id="listenBtn" onclick="listenToExample()">
+                🔊 예시 듣기
+            </button>
+            <button class="btn btn-secondary" id="recordBtn" onclick="startRecording()">
+                🎤 녹음 시작
+            </button>
+            <button class="btn btn-danger" id="nextBtn" onclick="nextChallenge()">
+                ⏭️ 다음 문제
+            </button>
+        </div>
+    </div>
+
+    <script>
+        class EnglishSpeakingGame {
+            constructor() {
+                this.currentMode = 'pronunciation';
+                this.score = 0;
+                this.level = 1;
+                this.streak = 0;
+                this.currentChallengeIndex = 0;
+                this.isRecording = false;
+                this.recognition = null;
+                this.completedWords = new Set();
+                this.conversationHistory = [];
+                
+                this.pronunciationChallenges = [
+                    {
+                        text: "Hello, how are you today?",
+                        phonetic: "/həˈloʊ, haʊ ɑr ju təˈdeɪ/",
+                        difficulty: "easy"
+                    },
+                    {
+                        text: "I love learning English",
+                        phonetic: "/aɪ lʌv ˈlɜrnɪŋ ˈɪŋglɪʃ/",
+                        difficulty: "easy"
+                    },
+                    {
+                        text: "The weather is beautiful today",
+                        phonetic: "/ðə ˈwɛðər ɪz ˈbjutəfəl təˈdeɪ/",
+                        difficulty: "medium"
+                    },
+                    {
+                        text: "I would like to improve my pronunciation",
+                        phonetic: "/aɪ wʊd laɪk tu ɪmˈpruv maɪ prəˌnʌnsiˈeɪʃən/",
+                        difficulty: "hard"
+                    }
+                ];
+
+                this.vocabularyWords = [
+                    { korean: "안녕하세요", english: "hello", difficulty: "easy" },
+                    { korean: "감사합니다", english: "thank you", difficulty: "easy" },
+                    { korean: "죄송합니다", english: "sorry", difficulty: "easy" },
+                    { korean: "축하합니다", english: "congratulations", difficulty: "medium" },
+                    { korean: "발음", english: "pronunciation", difficulty: "hard" }
+                ];
+
+                this.conversationTopics = [
+                    "안녕하세요! 자기소개를 해주세요.",
+                    "오늘 날씨가 어떤가요?",
+                    "취미가 무엇인가요?",
+                    "좋아하는 음식은 무엇인가요?"
+                ];
+
+                this.initializeSpeechRecognition();
+                this.updateUI();
+            }
+
+            initializeSpeechRecognition() {
+                if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                    this.recognition = new SpeechRecognition();
+                    this.recognition.lang = 'en-US';
+                    this.recognition.continuous = false;
+                    this.recognition.interimResults = false;
+
+                    this.recognition.onstart = () => {
+                        this.isRecording = true;
+                        document.getElementById('recordingIndicator').style.display = 'flex';
+                        document.getElementById('recordBtn').textContent = '⏹️ 녹음 중지';
+                        document.getElementById('recordBtn').className = 'btn btn-danger';
+                    };
+
+                    this.recognition.onend = () => {
+                        this.isRecording = false;
+                        document.getElementById('recordingIndicator').style.display = 'none';
+                        document.getElementById('recordBtn').textContent = '🎤 녹음 시작';
+                        document.getElementById('recordBtn').className = 'btn btn-secondary';
+                    };
+
+                    this.recognition.onresult = (event) => {
+                        const transcript = event.results[0][0].transcript.toLowerCase().trim();
+                        this.processRecognitionResult(transcript);
+                    };
+
+                    this.recognition.onerror = (event) => {
+                        this.showFeedback('음성 인식 오류가 발생했습니다. 다시 시도해주세요.', 'error');
+                        this.isRecording = false;
+                        document.getElementById('recordingIndicator').style.display = 'none';
+                        document.getElementById('recordBtn').textContent = '🎤 녹음 시작';
+                        document.getElementById('recordBtn').className = 'btn btn-secondary';
+                    };
+                } else {
+                    this.showFeedback('죄송합니다. 이 브라우저는 음성 인식을 지원하지 않습니다.', 'error');
+                }
+            }
+
+            processRecognitionResult(transcript) {
+                if (this.currentMode === 'pronunciation') {
+                    const currentChallenge = this.pronunciationChallenges[this.currentChallengeIndex];
+                    const expected = currentChallenge.text.toLowerCase();
+                    const similarity = this.calculateSimilarity(transcript, expected);
+                    
+                    if (similarity > 0.7) {
+                        this.correctAnswer();
+                    } else if (similarity > 0.4) {
+                        this.showFeedback(`거의 맞아요! 들린 내용: "${transcript}"`, 'warning');
+                    } else {
+                        this.showFeedback(`다시 시도해보세요. 들린 내용: "${transcript}"`, 'error');
+                    }
+                } else if (this.currentMode === 'vocabulary') {
+                    const currentWord = this.vocabularyWords.find(word => !this.completedWords.has(word.english));
+                    if (currentWord && transcript.includes(currentWord.english)) {
+                        this.correctAnswer();
+                        this.completedWords.add(currentWord.english);
+                        this.updateVocabularyDisplay();
+                    } else {
+                        this.showFeedback(`다시 시도해보세요. 들린 내용: "${transcript}"`, 'error');
+                    }
+                } else if (this.currentMode === 'conversation') {
+                    this.addConversationMessage(transcript, 'user');
+                    this.generateBotResponse(transcript);
+                }
+            }
+
+            calculateSimilarity(str1, str2) {
+                const words1 = str1.split(' ');
+                const words2 = str2.split(' ');
+                const maxLength = Math.max(words1.length, words2.length);
+                
+                let matches = 0;
+                words1.forEach(word => {
+                    if (words2.some(w => w.includes(word) || word.includes(w))) {
+                        matches++;
+                    }
+                });
+                
+                return matches / maxLength;
+            }
+
+            correctAnswer() {
+                this.score += 10 + (this.level * 5);
+                this.streak++;
+                
+                if (this.streak > 0 && this.streak % 5 === 0) {
+                    this.level++;
+                    this.showFeedback(`🎉 완벽해요! 레벨 업! (${this.streak}연속 성공)`, 'success');
+                } else {
+                    this.showFeedback(`🎉 완벽한 발음이에요! (+${10 + (this.level * 5)}점)`, 'success');
+                }
+                
+                this.updateUI();
+                setTimeout(() => this.nextChallenge(), 1500);
+            }
+
+            showFeedback(message, type) {
+                const feedback = document.getElementById('feedback');
+                feedback.textContent = message;
+                feedback.className = `feedback ${type}`;
+                feedback.style.display = 'block';
+                
+                setTimeout(() => {
+                    feedback.style.display = 'none';
+                }, 3000);
+            }
+
+            updateUI() {
+                document.getElementById('score').textContent = this.score;
+                document.getElementById('level').textContent = this.level;
+                document.getElementById('streak').textContent = this.streak;
+                
+                const progress = (this.streak % 5) * 20;
+                document.getElementById('progressFill').style.width = `${progress}%`;
+            }
+
+            switchMode(mode) {
+                this.currentMode = mode;
+                this.currentChallengeIndex = 0;
+                
+                // 모든 모드 버튼에서 active 클래스 제거
+                document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+                
+                // 클릭된 버튼에 active 클래스 추가
+                event.target.classList.add('active');
+                
+                // 모든 모드 숨기기
+                document.getElementById('pronunciationMode').style.display = 'none';
+                document.getElementById('vocabularyMode').style.display = 'none';
+                document.getElementById('conversationMode').style.display = 'none';
+                
+                if (mode === 'pronunciation') {
+                    document.getElementById('pronunciationMode').style.display = 'block';
+                    document.getElementById('listenBtn').style.display = 'inline-block';
+                    this.loadPronunciationChallenge();
+                } else if (mode === 'vocabulary') {
+                    document.getElementById('vocabularyMode').style.display = 'block';
+                    document.getElementById('listenBtn').style.display = 'none';
+                    this.loadVocabularyChallenge();
+                } else if (mode === 'conversation') {
+                    document.getElementById('conversationMode').style.display = 'block';
+                    document.getElementById('listenBtn').style.display = 'none';
+                    this.loadConversationChallenge();
+                }
+            }
+
+            loadPronunciationChallenge() {
+                const challenge = this.pronunciationChallenges[this.currentChallengeIndex];
+                document.getElementById('challengeText').textContent = challenge.text;
+                document.getElementById('phoneticText').textContent = challenge.phonetic;
+                
+                const difficultyElement = document.getElementById('difficulty');
+                difficultyElement.textContent = challenge.difficulty === 'easy' ? '초급' : 
+                                              challenge.difficulty === 'medium' ? '중급' : '고급';
+                difficultyElement.className = `difficulty-indicator ${challenge.difficulty}`;
+            }
+
+            loadVocabularyChallenge() {
+                const availableWords = this.vocabularyWords.filter(word => !this.completedWords.has(word.english));
+                if (availableWords.length === 0) {
+                    this.showFeedback('🎉 모든 단어를 완료했습니다!', 'success');
+                    this.completedWords.clear();
+                    return;
+                }
+                
+                const currentWord = availableWords[0];
+                document.getElementById('vocabChallenge').textContent = 
+                    `다음 단어를 영어로 말해보세요: "${currentWord.korean}"`;
+                
+                this.updateVocabularyDisplay();
+            }
+
+            updateVocabularyDisplay() {
+                const wordList = document.getElementById('wordList');
+                wordList.innerHTML = '';
+                
+                this.vocabularyWords.forEach(word => {
+                    const wordCard = document.createElement('div');
+                    wordCard.className = `word-card ${this.completedWords.has(word.english) ? 'completed' : ''}`;
+                    wordCard.innerHTML = `
+                        <div style="font-weight: bold;">${word.korean}</div>
+                        <div style="color: #6b7280;">${word.english}</div>
+                    `;
+                    wordList.appendChild(wordCard);
+                });
+            }
+
+            loadConversationChallenge() {
+                // 대화 모드는 이미 초기화됨
+            }
+
+            addConversationMessage(message, sender) {
+                const historyDiv = document.getElementById('conversationHistory');
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${sender}-message`;
+                messageDiv.textContent = message;
+                historyDiv.appendChild(messageDiv);
+                historyDiv.scrollTop = historyDiv.scrollHeight;
+            }
+
+            generateBotResponse(userMessage) {
+                const responses = [
+                    "That's interesting! Can you tell me more?",
+                    "Great! How do you feel about that?",
+                    "I see. What do you think about it?",
+                    "Nice! Do you have any questions?",
+                    "Excellent English! Keep going!"
+                ];
+                
+                const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+                
+                setTimeout(() => {
+                    this.addConversationMessage(randomResponse, 'bot');
+                }, 1000);
+            }
+
+            listenToExample() {
+                if (this.currentMode === 'pronunciation' && 'speechSynthesis' in window) {
+                    const utterance = new SpeechSynthesisUtterance(
+                        this.pronunciationChallenges[this.currentChallengeIndex].text
+                    );
+                    utterance.lang = 'en-US';
+                    utterance.rate = 0.8;
+                    speechSynthesis.speak(utterance);
+                }
+            }
+
+            startRecording() {
+                if (!this.recognition) {
+                    this.showFeedback('음성 인식이 지원되지 않는 브라우저입니다.', 'error');
+                    return;
+                }
+
+                if (this.isRecording) {
+                    this.recognition.stop();
+                } else {
+                    this.recognition.start();
+                }
+            }
+
+            nextChallenge() {
+                if (this.currentMode === 'pronunciation') {
+                    this.currentChallengeIndex = (this.currentChallengeIndex + 1) % this.pronunciationChallenges.length;
+                    this.loadPronunciationChallenge();
+                } else if (this.currentMode === 'vocabulary') {
+                    this.loadVocabularyChallenge();
+                } else if (this.currentMode === 'conversation') {
+                    const topic = this.conversationTopics[Math.floor(Math.random() * this.conversationTopics.length)];
+                    this.addConversationMessage(topic, 'bot');
+                }
+                
+                document.getElementById('feedback').style.display = 'none';
+            }
+        }
+
+        // 전역 함수들
+        let game;
+
+        function switchMode(mode) {
+            game.switchMode(mode);
+        }
+
+        function listenToExample() {
+            game.listenToExample();
+        }
+
+        function startRecording() {
+            game.startRecording();
+        }
+
+        function nextChallenge() {
+            game.nextChallenge();
+        }
+
+        // 게임 초기화
+        window.onload = function() {
+            game = new EnglishSpeakingGame();
+        };
+    </script>
+</body>
+</html>
