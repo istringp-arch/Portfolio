@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI & 임베디드 개발자 포트폴리오</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #00d4ff;
+            --secondary-color: #ff6b6b;
+            --accent-color: #4ecdc4;
+            --dark-bg: #0a0a0a;
+            --darker-bg: #050505;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --gradient-1: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-2: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-3: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--darker-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* 네비게이션 */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: var(--gradient-3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-color);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after, .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* 히어로 섹션 */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            background: var(--dark-bg);
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 107, 107, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(78, 205, 196, 0.3) 0%, transparent 50%);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            max-width: 800px;
+            padding: 0 2rem;
+        }
+
+        .hero-title {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            background: var(--gradient-3);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: slideInFromTop 1s ease-out;
+        }
+
+        .hero-subtitle {
+            font-size: 1.5rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            animation: slideInFromBottom 1s ease-out 0.2s both;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            color: var(--text-secondary);
+            animation: fadeIn 1s ease-out 0.4s both;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            animation: fadeIn 1s ease-out 0.6s both;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary {
+            background: var(--gradient-3);
+            color: white;
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--primary-color);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.6);
+        }
+
+        /* 애니메이션 */
+        @keyframes slideInFromTop {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInFromBottom {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* 섹션 공통 스타일 */
+        .section {
+            padding: 8rem 0;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 4rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            color: var(--text-secondary);
+            margin-bottom: 4rem;
+            font-size: 1.2rem;
+        }
+
+        /* 소개 섹션 */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 4rem;
+            align-items: center;
+        }
+
+        .about-image {
+            position: relative;
+        }
+
+        .profile-pic {
+            width: 100%;
+            max-width: 300px;
+            height: 300px;
+            border-radius: 20px;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .profile-pic:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .about-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .highlight {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        /* 기술 스택 */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .skill-category {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .skill-category:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .skill-category h3 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-tag {
+            background: var(--gradient-2);
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: white;
+            transition: transform 0.2s ease;
+        }
+
+        .skill-tag:hover {
+            transform: scale(1.05);
+        }
+
+        /* 프로젝트 섹션 */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .project-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        .project-image {
+            height: 200px;
+            background: var(--gradient-1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .project-content {
+            padding: 2rem;
+        }
+
+        .project-title {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .project-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .tech-tag {
+            background: rgba(78, 205, 196, 0.2);
+            color: var(--accent-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            border: 1px solid var(--accent-color);
+        }
+
+        .project-links {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .project-link {
+            padding: 0.5rem 1rem;
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .project-link:hover {
+            background: var(--accent-color);
+            transform: scale(1.05);
+        }
+
+        /* 연락처 섹션 */
+        .contact {
+            background: rgba(255, 255, 255, 0.02);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .contact-content {
+            text-align: center;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .contact-link:hover {
+            background: var(--primary-color);
+            color: var(--dark-bg);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 212, 255, 0.3);
+        }
+
+        /* 푸터 */
+        .footer {
+            background: var(--darker-bg);
+            padding: 2rem 0;
+            text-align: center;
+            color: var(--text-secondary);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .about-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .projects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-links {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-menu {
+                display: none;
+            }
+        }
+
+        /* 스크롤 애니메이션 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 커스텀 스크롤바 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--darker-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">AI Developer</div>
+            <ul class="nav-menu">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#projects" class="nav-link">Projects</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 히어로 섹션 -->
+    <section id="home" class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <h1 class="hero-title">AI & 임베디드 개발자</h1>
+            <h2 class="hero-subtitle">인공지능과 하드웨어의 융합</h2>
+            <p class="hero-description">
+                최신 AI 기술과 임베디드 시스템을 활용하여 혁신적인 솔루션을 개발합니다. 
+                머신러닝부터 IoT까지, 미래를 만들어가는 개발자입니다.
+            </p>
+            <div class="cta-buttons">
+                <a href="#projects" class="btn btn-primary">프로젝트 보기</a>
+                <a href="#contact" class="btn btn-secondary">연락하기</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 소개 섹션 -->
+    <section id="about" class="section about fade-in">
+        <h2 class="section-title">About Me</h2>
+        <div class="about-content">
+            <div class="about-image">
+                <img src="https://via.placeholder.com/300x300?text=Profile" alt="Profile" class="profile-pic">
+            </div>
+            <div class="about-text">
+                <p>
+                    안녕하세요! 저는 <span class="highlight">인공지능과 임베디드 시스템</span>을 전문으로 하는 개발자입니다. 
+                    5년간의 실무 경험을 바탕으로 AI 모델을 실제 하드웨어에 구현하고 최적화하는 일을 하고 있습니다.
+                </p>
+                <br>
+                <p>
+                    <span class="highlight">TensorFlow, PyTorch</span>를 활용한 딥러닝 모델 개발부터 
+                    <span class="highlight">ARM Cortex, NVIDIA Jetson</span> 플랫폼에서의 임베디드 AI 구현까지, 
+                    소프트웨어와 하드웨어의 경계를 넘나들며 혁신적인 솔루션을 만들어갑니다.
+                </p>
+                <br>
+                <p>
+                    특히 <span class="highlight">Edge AI, Computer Vision, IoT</span> 분야에서 다수의 프로젝트를 성공적으로 완료했으며, 
+                    항상 최신 기술 트렌드를 학습하고 실무에 적용하는 것을 즐깁니다.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 기술 스택 섹션 -->
+    <section id="skills" class="section skills fade-in">
+        <h2 class="section-title">Skills & Technologies</h2>
+        <p class="section-subtitle">전문 기술 분야와 사용 도구들</p>
+        <div class="skills-grid">
+            <div class="skill-category">
+                <h3>🤖 인공지능 & 머신러닝</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">TensorFlow</span>
+                    <span class="skill-tag">PyTorch</span>
+                    <span class="skill-tag">OpenCV</span>
+                    <span class="skill-tag">Scikit-learn</span>
+                    <span class="skill-tag">ONNX</span>
+                    <span class="skill-tag">TensorRT</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3>⚡ 임베디드 시스템</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">C/C++</span>
+                    <span class="skill-tag">ARM Cortex</span>
+                    <span class="skill-tag">NVIDIA Jetson</span>
+                    <span class="skill-tag">Raspberry Pi</span>
+                    <span class="skill-tag">Arduino</span>
+                    <span class="skill-tag">FreeRTOS</span>
+                    <span class="skill-tag">Linux Kernel</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3>🔧 개발 도구 & 플랫폼</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">Docker</span>
+                    <span class="skill-tag">Git</span>
+                    <span class="skill-tag">VS Code</span>
+                    <span class="skill-tag">Jupyter</span>
+                    <span class="skill-tag">ROS</span>
+                    <span class="skill-tag">MQTT</span>
+                    <span class="skill-tag">Firebase</span>
+                </div>
+            </div>
+            <div class="skill-category">
+                <h3>🌐 웹 & 클라우드</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">FastAPI</span>
+                    <span class="skill-tag">React</span>
+                    <span class="skill-tag">Node.js</span>
+                    <span class="skill-tag">AWS</span>
+                    <span class="skill-tag">Google Cloud</span>
+                    <span class="skill-tag">MongoDB</span>
+                    <span class="skill-tag">PostgreSQL</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 프로젝트 섹션 -->
+    <section id="projects" class="section projects fade-in">
+        <h2 class="section-title">Featured Projects</h2>
+        <p class="section-subtitle">주요 프로젝트들을 소개합니다</p>
+        <div class="projects-grid">
+            <div class="project-card">
+                <div class="project-image">🔍</div>
+                <div class="project-content">
+                    <h3 class="project-title">실시간 객체 탐지 시스템</h3>
+                    <p class="project-description">
+                        YOLO v5 모델을 NVIDIA Jetson Nano에 최적화하여 실시간 객체 탐지를 수행하는 임베디드 시스템입니다. 
+                        TensorRT를 활용한 모델 가속화로 30fps 성능을 달성했습니다.
+                    </p>
+                    <div class="project-tech">
+                        <span class="tech-tag">PyTorch</span>
+                        <span class="tech-tag">TensorRT</span>
+                        <span class="tech-tag">CUDA</span>
+                        <span class="tech-tag">OpenCV</span>
+                        <span class="tech-tag">Jetson Nano</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#" class="project-link">GitHub</a>
+                        <a href="#" class="project-link">Demo</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-image">🏠</div>
+                <div class="project-content">
+                    <h3 class="project-title">AI 기반 스마트 홈 시스템</h3>
+                    <p class="project-description">
+                        음성 인식과 자연어 처리를 활용한 IoT 스마트 홈 컨트롤러입니다. 
+                        Raspberry Pi에서 Edge AI 추론을 수행하여 클라우드 의존성을 최소화했습니다.
+                    </p>
+                    <div class="project-tech">
+                        <span class="tech-tag">TensorFlow Lite</span>
+                        <span class="tech-tag">NLP</span>
+                        <span class="tech-tag">MQTT</span>
+                        <span class="tech-tag">Raspberry Pi</span>
+                        <span class="tech-tag">React</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#" class="project-link">GitHub</a>
+                        <a href="#" class="project-link">Demo</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-image">🤖</div>
+                <div class="project-content">
+                    <h3 class="project-title">자율주행 로봇 제어 시스템</h3>
+                    <p class="project-description">
+                        Computer Vision과 SLAM 알고리즘을 결합한 자율주행 로봇입니다. 
+                        ROS 프레임워크를 기반으로 센서 융합과 경로 계획을 구현했습니다.
+                    </p>
+                    <div class="project-tech">
+                        <span class="tech-tag">ROS</span>
+                        <span class="tech-tag">SLAM</span>
+                        <span class="tech-tag">LiDAR</span>
+                        <span class="tech-tag">Computer Vision</span>
+                        <span class="tech-tag">C++</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#" class="project-link">GitHub</a>
+                        <a href="#" class="project-link">Demo</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-image">⚡</div>
+                <div class="project-content">
+                    <h3 class="project-title">Edge AI 모델 최적화 도구</h3>
+                    <p class="project-description">
+                        딥러닝 모델을 임베디드 디바이스에 최적화하여 배포하는 자동화 도구입니다. 
+                        모델 압축, 양자화, 하드웨어별 최적화를 지원합니다.
+                    </p>
+                    <div class="project-tech">
+                        <span class="tech-tag">Model Optimization</span>
+                        <span class="tech-tag">Quantization</span>
+                        <span class="tech-tag">ONNX</span>
+                        <span class="tech-tag">TensorFlow Lite</span>
+                        <span class="tech-tag">Python</span>
+                    </div>
+                    <div class="project-links">
+                        <a href="#" class="project-link">GitHub</a>
+                        <a href="#" class="project-link">Demo</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 연락처 섹션 -->
+    <section id="contact" class="section contact fade-in">
+        <h2 class="section-title">Get In Touch</h2>
+        <div class="contact-content">
+            <p class="section-subtitle">
+                새로운 프로젝트나 협업 기회에 대해 언제든 연락주세요!<br>
+                AI와 임베디드 분야의 혁신적인 아이디어를 함께 구현해보시죠.
+            </p>
+            <div class="contact-links">
+                <a href="mailto:your.email@gmail.com" class="contact-link">
+                    📧 Email
+                </a>
+                <a href="https://github.com/yourusername" class="contact-link">
+                    🐱 GitHub
+                </a>
+                <a href="https://linkedin.com/in/yourusername" class="contact-link">
+                    💼 LinkedIn
+                </a>
+                <a href="tel:+821012345678" class="contact-link">
+                    📱 Phone
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="footer">
+        <p>&copy; 2025 AI & 임베디드 개발자. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // 부드러운 스크롤
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // 네비게이션 활성화
